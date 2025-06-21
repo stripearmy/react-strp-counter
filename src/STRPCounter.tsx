@@ -1,101 +1,186 @@
-// import "./styles/react-strp-counter.css";
 import React, {useEffect, useRef} from 'react';
 
-interface STRPCounterProps {
-    value?: number | string;
+export type STRPCounterProps = {
+    value: number | string;
     fontSize?: string;
-    delimiter?: string | boolean;
-    decimalSeparator?: string | boolean;
     minLength?: number;
-    unitLabel?: React.ReactNode;
-    unitLabelPosition?: "left" | "right";
-}
-
-declare module 'react' {
-    interface CSSProperties {
-        '--strp_fontsize'?: string;
-    }
-}
+    rollingMode?: boolean;
+    delimiter?: string | false;
+    decimalSeparator?: string | false;
+    unitLabel?: string | React.ReactNode;
+    unitLabelPosition?: 'left' | 'right';
+    stepDuration?: number;
+    easing?: string | false,
+};
 
 const formatNumber = (
     value: number | string,
-    delimiter: string | boolean = ",",
-    decimalSeparator: string | boolean = ".",
-    minLength: number = 0
+    minLength: number | undefined,
+    delimiter: string | false,
+    decimalSeparator: string | false
 ): string[] => {
-    const [rawInt = "0", rawDecimal = ""] = value.toString().split(/[.,]/);
-    const paddedInt = rawInt.padStart(minLength, "0");
+    if (decimalSeparator === '') {
+        decimalSeparator = false;
+    }
+    const valStr = typeof value === 'number' ? value.toString() : value;
+    const [integerRaw, decimalRaw] = valStr.split('.');
 
-    const useDelimiter = typeof delimiter === "string" ? delimiter : "";
-    const useDecimalSeparator = typeof decimalSeparator === "string" ? decimalSeparator : "";
+    const integer = minLength
+        ? integerRaw.padStart(minLength, '0')
+        : integerRaw;
 
-    const formattedInt = useDelimiter
-        ? paddedInt
-            .split("")
-            .reverse()
-            .reduce((acc, digit, idx) => {
-                return digit + (idx && idx % 3 === 0 ? useDelimiter : "") + acc;
-            }, "")
-        : paddedInt;
+    const intChars: string[] = [];
+    for (let i = 0; i < integer.length; i++) {
+        const digit = integer[integer.length - 1 - i];
+        intChars.unshift(digit);
 
-    const decimals = useDecimalSeparator ? rawDecimal || "00" : "";
+        if (
+            delimiter &&
+            i % 3 === 2 &&
+            i !== integer.length - 1
+        ) {
+            intChars.unshift(delimiter);
+        }
+    }
 
-    return useDecimalSeparator && decimals
-        ? [...formattedInt.split(""), useDecimalSeparator, ...decimals.split("")]
-        : formattedInt.split("");
+    const result = intChars;
+
+    if (decimalSeparator !== false) {
+        result.push(decimalSeparator || '.');
+        result.push(decimalRaw?.[0] || '0');
+        result.push(decimalRaw?.[1] || '0');
+    }
+
+    return result;
 };
 
 const STRPCounter: React.FC<STRPCounterProps> = ({
-                                                     value = 0,
-                                                     fontSize = "28px",
-                                                     delimiter = ",",
-                                                     decimalSeparator = ".",
-                                                     minLength = 0,
+                                                     value,
+                                                     fontSize = '28px',
+                                                     minLength,
+                                                     rollingMode = false,
+                                                     delimiter = false,
+                                                     decimalSeparator = false,
                                                      unitLabel,
-                                                     unitLabelPosition = "left",
+                                                     unitLabelPosition = 'left',
+                                                     stepDuration = 0.05,
+                                                     easing = 'cubic-bezier(0.33,0.81,0.1,1.02)',
                                                  }) => {
     import('./styles/styles.css');
-    const formatted = formatNumber(value, delimiter, decimalSeparator, minLength);
-    const ref = useRef<(HTMLDivElement | null)[]>([]);
+
+    const formatted = formatNumber(value, minLength, delimiter, decimalSeparator);
+    const refs = useRef<(HTMLDivElement | null)[]>([]);
+    const timeoutRefs = useRef<(ReturnType<typeof setTimeout> | null)[]>([]);
+    const prevFormattedRef = useRef<string[]>([]);
+    const hasMounted = useRef(false);
 
     useEffect(() => {
-        let digitCount = 0;
-        formatted.forEach((char, i) => {
-            const el = ref.current[i];
-            if (el && /\d/.test(char)) {
-                el.style.setProperty("--index", char);
-                el.style.setProperty("--count", digitCount.toString());
-                digitCount++;
+        return () => {
+            timeoutRefs.current.forEach((t) => t && clearTimeout(t));
+        };
+    }, []);
+
+    useEffect(() => {
+        timeoutRefs.current.forEach((t) => t && clearTimeout(t));
+        timeoutRefs.current = [];
+
+        let firstChangedDigitIdx = -1;
+        if (hasMounted.current) {
+            for (let i = 0; i < formatted.length; i++) {
+                if (
+                    /\d/.test(formatted[i]) &&
+                    formatted[i] !== prevFormattedRef.current?.[i]
+                ) {
+                    firstChangedDigitIdx = i;
+                    break;
+                }
+            }
+        }
+
+        formatted.forEach((char, idx) => {
+            const el = refs.current[idx];
+            if (!el) return;
+
+            if (/\d/.test(char)) {
+                const digit = Number(char);
+                const prevChar = prevFormattedRef.current[idx];
+                const prevDigit = /\d/.test(prevChar) ? Number(prevChar) : null;
+                const changed = prevDigit !== digit;
+
+                const shouldAnimate =
+                    rollingMode && changed && hasMounted.current;
+
+                if (shouldAnimate) {
+                    const partOfRipple = idx > firstChangedDigitIdx;
+
+                    el.style.setProperty(
+                        '--strp_transition',
+                        `transform ${stepDuration * 10}s var(--strp_easing)`
+                    );
+                    el.style.setProperty(
+                        '--strp_index',
+                        partOfRipple ? (digit + 10).toString() : digit.toString()
+                    );
+
+                    void el.offsetHeight;
+
+                    const timeout = setTimeout(() => {
+                        el.style.setProperty('--strp_transition', 'none');
+                        el.style.setProperty('--strp_index', digit.toString());
+                        el.style.removeProperty('--strp_transition');
+                    }, stepDuration * 10000);
+
+                    timeoutRefs.current[idx] = timeout;
+                } else {
+                    el.style.setProperty('--strp_index', digit.toString());
+                }
+
+                el.style.setProperty('--strp_count', idx.toString());
+            } else {
+                el.style.removeProperty('--strp_index');
+                el.style.removeProperty('--strp_count');
+                el.style.removeProperty('--strp_transition');
             }
         });
-    }, [formatted.join("")]);
+
+        hasMounted.current = true;
+        prevFormattedRef.current = formatted;
+    }, [formatted, rollingMode, stepDuration]);
 
     return (
-        <div className='strp_counter_wrap' style={{'--strp_fontsize': fontSize}}>
+        <div
+            className={`strp_counter_wrap${rollingMode ? ' strp_counter_wrap--rolling' : ''}`}
+            style={{['--strp_fontsize' as any]: fontSize, ['--strp_easing' as any]: easing}}
+        >
             {unitLabel && (
-                <div className={`strp_counter_unitLabel_holder strp_counter_unitLabel_holder--${unitLabelPosition}`}>
+                <div
+                    className={`strp_counter_unitLabel_holder strp_counter_unitLabel_holder--${unitLabelPosition}`}
+                >
                     {unitLabel}
                 </div>
             )}
 
-            {formatted.map((char, idx) => (
+            {formatted.map((char, idx) =>
                 /\d/.test(char) ? (
                     <div
                         key={idx}
                         className='strp_counter_num'
                         ref={(el: HTMLDivElement | null) => {
-                            ref.current[idx] = el;
+                            refs.current[idx] = el;
                         }}
                     >
                         <div className='strp_counter_num_in'/>
                     </div>
                 ) : (
-                    <span
-                        className='strp_counter_num strp_counter_num--delimeter'
+                    <div
                         key={idx}
-                    >{char}</span>
+                        className='strp_counter_num strp_counter_num--delimeter'
+                        aria-hidden='true'
+                    >
+                        {char}
+                    </div>
                 )
-            ))}
+            )}
         </div>
     );
 };

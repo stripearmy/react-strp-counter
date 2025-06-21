@@ -2,21 +2,17 @@ import { default as default_2 } from 'react';
 
 export declare const STRPCounter: default_2.FC<STRPCounterProps>;
 
-declare interface STRPCounterProps {
-    value?: number | string;
+declare type STRPCounterProps = {
+    value: number | string;
     fontSize?: string;
-    delimiter?: string | boolean;
-    decimalSeparator?: string | boolean;
     minLength?: number;
-    unitLabel?: default_2.ReactNode;
-    unitLabelPosition?: "left" | "right";
-}
+    rollingMode?: boolean;
+    delimiter?: string | false;
+    decimalSeparator?: string | false;
+    unitLabel?: string | default_2.ReactNode;
+    unitLabelPosition?: 'left' | 'right';
+    stepDuration?: number;
+    easing?: string | false;
+};
 
 export { }
-
-
-declare module 'react' {
-    interface CSSProperties {
-        '--strp_fontsize'?: string;
-    }
-}

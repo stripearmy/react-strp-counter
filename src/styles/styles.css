@@ -10,13 +10,16 @@
 }
 
 .strp_counter_wrap {
+    --strp_step: 10%;
     --strp_fontsize: 28px;
+    --strp_content: "0123456789";
     display: flex;
     justify-content: flex-start;
     align-items: center;
     flex-wrap: nowrap;
     column-gap: calc(var(--strp_fontsize) * .0725);
     font-size: var(--strp_fontsize);
+    font-family: var(--strp_fontfamily), monospace;
 }
 
 .strp_counter_unitLabel_holder {
@@ -28,16 +31,15 @@
 
 .strp_counter_unitLabel_holder--left {
     order: -1;
-    margin-right: calc(var(--strp_fontsize) * .5);
+    margin-right: calc(var(--strp_fontsize) * .35);
 }
 
 .strp_counter_unitLabel_holder--right {
     order: 99;
-    margin-left: calc(var(--strp_fontsize) * .5);
+    margin-left: calc(var(--strp_fontsize) * .35);
 }
 
 .strp_counter_num {
-    --step: 10%;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -63,14 +65,26 @@
     text-align: center;
     letter-spacing: calc(var(--strp_fontsize) - 10px);
     line-height: 1;
-    transition: transform calc(.7s + var(--index) * .2s) cubic-bezier(.34, .81, 1, 1.01);
-    transition-delay: calc(25ms * var(--count));
+    transition: var(--strp_transition);
+    transition-delay: var(--strp_delay);
     transform-origin: top center;
-    transform: translateY(calc(-1 * var(--step) * var(--index))) translateZ(0);
+    transform: translateY(calc(-1 * var(--strp_step) * var(--strp_index))) translateZ(0);
     pointer-events: none;
 }
 
+.strp_counter_wrap:not(.strp_counter_wrap--rolling) .strp_counter_num_in {
+    --strp_transition: transform calc(.6s + var(--strp_count) * .08s) var(--strp_easing);
+    --strp_delay: calc(10ms * var(--strp_count));
+}
+
+.strp_counter_wrap--rolling .strp_counter_num_in {
+    --strp_step: 5%;
+    --strp_content: "01234567890123456789";
+    --strp_transition: unset;
+    --strp_delay: unset;
+}
+
 .strp_counter_num_in:before {
-    content: "0123456789";
+    content: var(--strp_content);
     pointer-events: none;
 }
