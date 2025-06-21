@@ -79,7 +79,7 @@ import 'react-strp-counter/css';
 | `decimalSeparator`  | `string \| false`           | ❌       | `false`                              | Decimal point (e.g. "."), always add 2 decimals if you use this                                                                                                                                      |
 | `unitLabel`         | `string \| React.ReactNode` | ❌       | —                                    | Optional unit (e.g. "$", "kg", "`<div />`", "`<svg />`" etc.)                                                                                                                                        |
 | `unitLabelPosition` | `'left' \| 'right'`         | ❌       | `"left"`                             | Where to place the unit label                                                                                                                                                                        |
-| `easing`             | `string \| false`           | ❌       | `"cubic-bezier(0.33,0.81,0.1,1.02)"` | If set to "false" component will use "linear" instead. Feel free to pass your custom easing                                                                                                          |
+| `easing`             | `string \| false`           | ❌       | `"cubic-bezier(0.33, 0.81, 0.1, 1.02)"` | If set to "false" component will use "linear" instead. Feel free to pass your custom easing                                                                                                          |
 
 ---
 
