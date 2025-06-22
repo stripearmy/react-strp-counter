@@ -2,7 +2,7 @@
   "name": "react-strp-counter",
   "author": "Arsen Mkrtchyan (stripearmy)",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A lightweight counter that relies on CSS to rearrange numbers and doesn't rerender Elements",
   "type": "module",
   "main": "dist/react-strp-counter.umd.js",
@@ -13,8 +13,23 @@
   "keywords": [
     "react",
     "counter",
+    "digit",
+    "number",
     "css counter",
-    "number counter"
+    "number counter",
+    "number animation",
+    "counter animation",
+    "digit animation",
+    "casino counter",
+    "casino digits",
+    "casino numbers",
+    "jackpot counter",
+    "jackpot numbers",
+    "jackpot digits",
+    "flip",
+    "flip counter",
+    "flip numbers",
+    "flip digits"
   ],
   "files": [
     "dist",
