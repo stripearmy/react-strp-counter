@@ -6,6 +6,10 @@ A high-performance, CSS-only animated counter for React that never re-renders on
 
 Ideal for dashboards, KPIs, and animated counters where performance and visual smoothness matter.
 
+_LIGHT Package Size:_
+
+[![minzip size](https://badgen.net/bundlephobia/minzip/react-strp-counter?color=red)](https://badgen.net/bundlephobia/minzip/react-strp-counter?color=red)
+
 ### Demo: [https://stripearmy.github.io/strp-counter-demo/](https://stripearmy.github.io/strp-counter-demo/)
 
 ---
