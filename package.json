@@ -29,7 +29,10 @@
     "flip",
     "flip counter",
     "flip numbers",
-    "flip digits"
+    "flip digits",
+    "odometer",
+    "css odometer",
+    "react odomteter"
   ],
   "files": [
     "dist",
