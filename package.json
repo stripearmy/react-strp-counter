@@ -2,7 +2,7 @@
   "name": "react-strp-counter",
   "author": "Arsen Mkrtchyan (stripearmy)",
   "private": false,
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A lightweight counter that relies on CSS to rearrange numbers and doesn't rerender Elements",
   "type": "module",
   "main": "dist/react-strp-counter.umd.js",
