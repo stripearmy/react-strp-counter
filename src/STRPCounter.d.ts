@@ -1,5 +1,6 @@
 import "./styles/react-strp-counter.css";
-import React from "react";
+import type {ReactNode} from "react";
+
 interface STRPCounterProps {
     value: number | string;
     fontSize?: string;
@@ -7,7 +8,7 @@ interface STRPCounterProps {
     rollingMode?: boolean;
     delimiter?: string | false;
     decimalSeparator?: string | false;
-    unitLabel?: string | React.ReactNode;
+    unitLabel?: string | ReactNode;
     unitLabelPosition?: 'left' | 'right';
     stepDuration?: number;
     easing?: string | false,
