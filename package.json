@@ -2,7 +2,7 @@
   "name": "react-strp-counter",
   "author": "Arsen Mkrtchyan (stripearmy)",
   "private": false,
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "A lightweight counter that relies on CSS to rearrange numbers and doesn't rerender Elements",
   "type": "module",
   "main": "dist/react-strp-counter.umd.js",
@@ -55,8 +55,8 @@
     "preview": "vite preview"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
@@ -73,8 +73,8 @@
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
     "vite-plugin-static-copy": "^2.3.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "vite-plugin-dts": "^4.5.3"
   }
 }
