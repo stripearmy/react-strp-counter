@@ -1,4 +1,3 @@
-import "./styles/react-strp-counter.css";
 import type {ReactNode} from "react";
 
 interface STRPCounterProps {

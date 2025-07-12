@@ -1,6 +1,7 @@
 import React, {useEffect, useRef} from 'react';
+import './css/styles.css';
 
-export type STRPCounterProps = {
+export interface STRPCounterProps {
     value: number | string;
     fontSize?: string;
     minLength?: number;
@@ -11,7 +12,7 @@ export type STRPCounterProps = {
     unitLabelPosition?: 'left' | 'right';
     stepDuration?: number;
     easing?: string | false,
-};
+}
 
 const formatNumber = (
     value: number | string,
@@ -66,7 +67,6 @@ const STRPCounter: React.FC<STRPCounterProps> = ({
                                                      stepDuration = 0.05,
                                                      easing = 'cubic-bezier(0.33,0.81,0.1,1.02)',
                                                  }) => {
-    import('./styles/styles.css');
 
     const formatted = formatNumber(value, minLength, delimiter, decimalSeparator);
     const refs = useRef<(HTMLDivElement | null)[]>([]);
